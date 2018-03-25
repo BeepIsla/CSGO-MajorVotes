@@ -7,7 +7,7 @@ new String:backupToLoad[1024];
 
 public Plugin myinfo = {
 	name        = "Ingame Tournament Votes",
-	author      = "Felix",
+	author      = "github.com/BeepFelix",
 	description = "Allows users to use the ingame votes seen in Major Tournaments such as \"Load Backup\", \"Pause during freezetime\", \"Begin warmup countdown to match start\", etc",
 	version     = "0.0.1"
 };
