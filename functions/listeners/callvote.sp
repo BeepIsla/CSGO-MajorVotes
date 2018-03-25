@@ -88,8 +88,11 @@ public Action:Command_Callvote(client, const String:command[], argc)
 	else if (strcmp(argument, "starttimeout") == 0)
 	{
 		ServerCommand("sv_vote_quorum_ratio 0.501");
+		return Plugin_Continue;
 		
-		new Handle:vote = NativeVotes_Create(VOTE_StartTimeoutHandler, NativeVotesType_Custom_YesNo);
+		// We do not need this code as timeouts still get handled by the game itself for some reason (plus the below code doesnt even work cuz im stupid)
+		
+		/*new Handle:vote = NativeVotes_Create(VOTE_StartTimeoutHandler, NativeVotesType_Custom_YesNo);
 		
 		if (GameRules_GetProp("m_bMatchWaitingForResume") == 1 || GameRules_GetProp("m_bTerroristTimeOutActive") == 1 ||
 			GameRules_GetProp("m_bCTTimeOutActive") == 1 || GameRules_GetProp("m_flTerroristTimeOutRemaining") <= 0 || 
@@ -103,7 +106,7 @@ public Action:Command_Callvote(client, const String:command[], argc)
 		NativeVotes_SetInitiator(vote, client);
 		NativeVotes_SetTeam(vote, GetClientTeam(client));
 		NativeVotes_SetDetails(vote, "#SFUI_Vote_pause_match");
-		NativeVotes_DisplayToAll(vote, GetConVarInt(FindConVar("sv_vote_timer_duration")));
+		NativeVotes_DisplayToAll(vote, GetConVarInt(FindConVar("sv_vote_timer_duration")));*/
 	}
 
 	// Vote to load a backup file
