@@ -3,7 +3,10 @@
 # This is mostly so others can learn from it or use it as a base
 
 Info: "m_bIsQueuedMatchmaking" forcefully disables the teammenu so you might have to create your own work around or teammanager
+
 Note: This plugin [REQUIRES NativeVotes](https://forums.alliedmods.net/showthread.php?t=208008)
+
+
 
 Using the settings "m_szTournamentEventName" and "m_bIsQueuedMatchmaking" you can create major-similar matches that use the ingame voting system. You still have to handle the votes yourself using NativeVotes for example like I do in this example plugin.
 
