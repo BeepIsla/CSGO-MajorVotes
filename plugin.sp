@@ -16,9 +16,11 @@ public Plugin myinfo = {
 
 public void OnConfigsExecuted()
 {
-	GameRules_SetPropString("m_szTournamentEventName", "Custom Test Tournament");
+	GameRules_SetPropString("m_szTournamentEventName", "Custom Test Tournament"); // This is required to enable the Major-Like behaviour
 	GameRules_SetPropString("m_szTournamentEventStage", "");
-	GameRules_SetProp("m_bIsQueuedMatchmaking", 1);
+	GameRules_SetProp("m_bIsQueuedMatchmaking", 1); // This is required to enable the Major-Like behaviour
+	// "m_bIsQueuedMatchmaking" forces the teammenu to be disabled (similar to "mp_force_assign_teams" & "sv_disable_show_team_select_menu")
+	// So I recommend you write your own team-manager or team-balancer or whatever to go around this
 	
 	ServerCommand("nativevotes_vote_delay 5");
 	ServerCommand("nativevotes_progress_chat 0");
