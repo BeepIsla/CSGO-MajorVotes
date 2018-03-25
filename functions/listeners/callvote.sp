@@ -85,8 +85,7 @@ public Action:Command_Callvote(client, const String:command[], argc)
 	}
 
 	// Vote to timeout at next freezetime
-	// Is not needed because the game handles that itself for some reason
-	/*else if (strcmp(argument, "starttimeout") == 0)
+	else if (strcmp(argument, "starttimeout") == 0)
 	{
 		ServerCommand("sv_vote_quorum_ratio 0.501");
 		
@@ -105,7 +104,7 @@ public Action:Command_Callvote(client, const String:command[], argc)
 		NativeVotes_SetTeam(vote, GetClientTeam(client));
 		NativeVotes_SetDetails(vote, "#SFUI_Vote_pause_match");
 		NativeVotes_DisplayToAll(vote, GetConVarInt(FindConVar("sv_vote_timer_duration")));
-	}*/
+	}
 
 	// Vote to load a backup file
 	else if (strcmp(argument, "loadbackup") == 0)
