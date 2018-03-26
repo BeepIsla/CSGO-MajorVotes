@@ -14,7 +14,7 @@ public Plugin myinfo = {
 
 #include "./functions/functions.sp"
 
-public void OnConfigsExecuted()
+public void OnMapStart()
 {
 	GameRules_SetPropString("m_szTournamentEventName", "Custom Test Tournament"); // This is required to enable the Major-Like behaviour
 	GameRules_SetPropString("m_szTournamentEventStage", "");
