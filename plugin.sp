@@ -33,12 +33,14 @@ public void OnMapStart()
 	ServerCommand("nativevotes_progress_console 1");
 	ServerCommand("nativevotes_progress_client_console 0");
 	ServerCommand("nativevotes_progress_hintbox 0");
-	ServerCommand("sv_vote_command_delay 0"); // Disable command delay when using ingame votes (which are not handled by the plugin) so they execute instantly after the vote has finished
+	
+	// Disable command delay when using ingame votes (which are not handled by the plugin) so they execute instantly after the vote has finished
+	ServerCommand("sv_vote_command_delay 0");
 }
 
 public void OnPluginStart()
 {
-	AddCommandListener(Command_Callvote, "callvote"); // Add "callvote" listener
+	AddCommandListener(Command_Callvote, "callvote");
 }
 
 #include "./functions/listeners/callvote.sp"
