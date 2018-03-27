@@ -1,6 +1,6 @@
 # CSGO-IngameVotes
 
-# This is mostly so others can learn from it or use it as a base
+**It looks like NativeVotes isnt properly working, wit 2 players, 1 yes and 1 no vote = Successful vote, which is weird, I'd wish there would be a NativeVotes alternative or it would still be updated...**
 
 Info: "m_bIsQueuedMatchmaking" forcefully disables the teammenu so you might have to create your own work around or teammanager
 
