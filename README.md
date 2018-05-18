@@ -2,6 +2,8 @@
 
 **It looks like NativeVotes isnt properly working, with 2 players, 1 yes and 1 no vote = Successful vote, which is weird and it only happens sometimes? I'd wish there would be a NativeVotes alternative or it would still be updated...**
 
+# I am starting to understand how votes in CSGO work and how to make custom votes - Will update this eventually once I get it all working
+
 Info: "m_bIsQueuedMatchmaking" forcefully disables the teammenu so you might have to create your own work around or teammanager
 
 Note: This plugin [REQUIRES NativeVotes](https://forums.alliedmods.net/showthread.php?t=208008)
