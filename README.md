@@ -1,7 +1,5 @@
 # CSGO-IngameVotes v2.0
 
-This plugin no longer requires NativeVotes!
-
 **WARNING: I did not properly test it because I don't own a server nor have enough friends to test it with. Please try it out and report back to me. Preferrably on Discord (Felix#2343)**
 
 Info: "m_bIsQueuedMatchmaking" forcefully disables the teammenu so you might have to create your own work around or teammanager
@@ -13,7 +11,7 @@ Using the settings "m_szTournamentEventName" and "m_bIsQueuedMatchmaking" you ca
 [Example how the vote menu looks like 2](https://cdn.discordapp.com/attachments/426980696809144321/427424570518142976/Unbenannt2.PNG)
 
 # Full explanation to what this plugin all does:
-This plugin listens to the "callvote" command which is automatically executed when you press a option on the vote menu. It then fiddles around with the vote_controller and [UserMessages](https://wiki.alliedmods.net/Counter-Strike:_Global_Offensive_UserMessages) to create a vote on the left side of your screen. The plugin also listens to the "vote" command. It is execute when you press F1 or F2 to vote, the command is ONLY executed if a vote actually exists. After every successful vote the plugin checks if there are enough Yes/No votes and if a quorum ratio is fulfilled. Some of the votes only require 1 vote to succeed. Some require all 10 players. That was not possible with NativeVotes so I had to figure out how votes in CSGO work to try and re-create it.
+This plugin listens to the "callvote" command which is automatically executed when you press a option on the vote menu. It then fiddles around with the vote_controller and [UserMessages](https://wiki.alliedmods.net/Counter-Strike:_Global_Offensive_UserMessages) to create a vote on the left side of your screen. The plugin also listens to the "vote" command. It is execute when you press F1 or F2 to vote, the command is ONLY executed if a vote actually exists. After every successful vote the plugin checks if there are enough Yes/No votes and if a quorum ratio is fulfilled. Some of the votes only require 1 vote to succeed. Some require all 10 players. That was not possible with [NativeVotes](https://forums.alliedmods.net/showthread.php?t=208008) so I had to figure out how votes in CSGO work to try and re-create it.
 
 If a vote passes or fails the plugin again fiddles around with the vote_controller and [UserMessages](https://wiki.alliedmods.net/Counter-Strike:_Global_Offensive_UserMessages) to make the "Vote Passed" or "Vote Failed" screen appear. If a vote passes it checks the type of the vote we called and then does what the vote wants it to do. Eg: We vote to pause the match and if it succeeds the plugin executes "mp_pause_match" to pause the match. If a vote fails it just displays it and does nothing.
 
