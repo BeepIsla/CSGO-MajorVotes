@@ -1,53 +1,84 @@
 #include <sourcemod>
-#include <cstrike>
 #include <sdktools>
-#include <nativevotes>
-
-new String:backupToLoad[1024];
+#include <cstrike>
 
 public Plugin myinfo = {
 	name        = "Ingame Tournament Votes",
 	author      = "github.com/BeepFelix",
 	description = "Allows users to use the ingame votes seen in Major Tournaments such as \"Load Backup\", \"Pause during freezetime\", \"Begin warmup countdown to match start\", etc",
-	version     = "0.0.1"
+	version     = "2.0"
 };
 
-#include "./functions/functions.sp"
+int teamVoteID = -1;
+int voteType = -1;
+new String:displayString[512];
+new String:detailsString[512];
+new String:otherTeamString[512];
+new String:passString[512];
+new String:passDetailsString[512];
+new bool:isTeamOnly = false;
+new bool:isVoteActive = false;
+new bool:alreadyVoted[MAXPLAYERS + 1];
+
+// Vote stuff
+new bool:canSurrender = true;
+
+public OnPluginStart()
+{
+	for (int i = 0; i < MAXPLAYERS + 1; i++) alreadyVoted[i] = false;
+	
+	AddCommandListener(Listener_Vote, "vote");
+	AddCommandListener(Listener_Callvote, "callvote");
+	AddCommandListener(Listener_Listissues, "listissues");
+}
+
+public void OnClientConnected(client)
+{
+	alreadyVoted[client] = false;
+}
+
+public void OnClientDisconnect(client)
+{
+	alreadyVoted[client] = false;
+}
 
 public void OnMapStart()
 {
-	GameRules_SetPropString("m_szTournamentEventName", "Custom Test Tournament"); // This is required to enable the Major-Like behaviour
+	canSurrender = true;
 	
-	// GameRules_SetPropString("m_szTournamentEventStage", ""); Not needed
-	// Set it to something if you want to
+	for (int i = 0; i < MAXPLAYERS + 1; i++) alreadyVoted[i] = false;
 	
-	GameRules_SetProp("m_bIsQueuedMatchmaking", 1); // This is required to enable the Major-Like behaviour
-	// "m_bIsQueuedMatchmaking" forces the teammenu to be disabled (similar to "mp_force_assign_teams" & "sv_disable_show_team_select_menu")
-	// So I recommend you write your own team-manager or team-balancer or whatever to go around this
-	
-	
-	
-	// Recommended NativeVotes settings
-	ServerCommand("nativevotes_vote_delay 5");
-	ServerCommand("nativevotes_progress_chat 0");
-	ServerCommand("nativevotes_progress_console 1");
-	ServerCommand("nativevotes_progress_client_console 0");
-	ServerCommand("nativevotes_progress_hintbox 0");
-	
-	// Disable command delay when using ingame votes (which are not handled by the plugin) so they execute instantly after the vote has finished
-	ServerCommand("sv_vote_command_delay 0");
+	GameRules_SetProp("m_bIsQueuedMatchmaking", 1); // Change this in combination of "m_szTournamentEventName" to achieve different plugin-results
+	GameRules_SetPropString("m_szTournamentEventName", "Example Tournament Event Name"); // Change this in combination of "m_bIsQueuedMatchmaking" to achieve different plugin-results
+	/*
+	How the aboves work:
+		- Set "m_bIsQueuedMatchmaking" to 0 to disable the plugin
+		- Set "m_szTournamentEventName" to "" to disable tournament votes
+			- It only enabled "StartTimeout" and "surrender"
+			- Everything else is disabled
+		- Set "m_szTournamentEventName" to any string (it is shown in the top right on your scoreboard) to enable tournament votes
+			- It enables "ReadyForMatch" & "NotReadyForMatch" & "PauseMatch" & "UnpauseMatch" & "LoadBackup" & "StartTimeout"
+			- It disables "surrender"
+	*/
 }
 
-public void OnPluginStart()
-{
-	AddCommandListener(Command_Callvote, "callvote");
-}
-
+#include "./functions/listeners/listissues.sp"
 #include "./functions/listeners/callvote.sp"
+#include "./functions/listeners/vote.sp"
 
-#include "./functions/handlers/vote_readyformatch.sp"
-#include "./functions/handlers/vote_notreadyformatch.sp"
-#include "./functions/handlers/vote_pausematch.sp"
-#include "./functions/handlers/vote_unpausematch.sp"
-#include "./functions/handlers/vote_timeout.sp"
-#include "./functions/handlers/vote_loadbackup.sp"
+#include "./functions/handlers/voteYes.sp"
+#include "./functions/handlers/voteNo.sp"
+#include "./functions/handlers/getResults.sp"
+
+#include "./functions/handlers/votePass.sp"
+#include "./functions/handlers/voteFail.sp"
+
+#include "./functions/resolvers/doSurrender.sp"
+#include "./functions/resolvers/doReadyForMatch.sp"
+#include "./functions/resolvers/doNotReadyForMatch.sp"
+#include "./functions/resolvers/doPauseMatch.sp"
+#include "./functions/resolvers/doUnpauseMatch.sp"
+#include "./functions/resolvers/doLoadBackup.sp"
+#include "./functions/resolvers/doStartTimeout.sp"
+
+#include "./functions/functions.sp"
