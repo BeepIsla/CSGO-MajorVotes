@@ -12,7 +12,7 @@ Using the settings "m_szTournamentEventName" and "m_bIsQueuedMatchmaking" you ca
 
 [Example how the vote menu looks like 2](https://cdn.discordapp.com/attachments/426980696809144321/427424570518142976/Unbenannt2.PNG)
 
-#Changelog:
+# Changelog:
 
 - Removed the requirement for NativeVotes
 - Votes are now fully handled by the plugin itself
