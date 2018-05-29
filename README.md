@@ -26,6 +26,7 @@ The plugin also listens to "listissues". It is a command for clients only which 
 - Surrendering and timeouts tirggered at the exact perfect time will cause them to happen for the wrong team - The possibility of that happening is very low but the chance is still there.
 
 **2.1:**
+- Added proper chat messages when someone pauses the match or stops the warmup countdown
 - Fixed the error "Trying to resolve a vote that is not a YES/NO vote, YES/NO votes aren't currently supported!" appearing in server console when calling a vote to stop the warmup countdown
 - Fixed some votes showing for everyone even tho only the caller should see them
 - Fixed votes never ending on their own
