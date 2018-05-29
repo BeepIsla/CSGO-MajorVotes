@@ -5,8 +5,8 @@ public Action:Listener_Vote(client, const String:command[], int argc)
 		return Plugin_Continue;
 	}
 	
-	if (alreadyVoted[client] == true) return Plugin_Stop;
-	
+	if (alreadyVoted[client] == true || soloOnly == true) return Plugin_Stop;
+
 	new entity = FindEntityByClassname(-1, "vote_controller");
 	
 	if (entity < 0) return Plugin_Stop;

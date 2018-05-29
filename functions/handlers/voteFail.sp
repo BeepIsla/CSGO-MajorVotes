@@ -6,7 +6,21 @@ VoteFail(int reason)
 	
 	new Handle:voteFailed;
 
-	if (GetEntProp(entity, Prop_Send, "m_iOnlyTeamToVote", -1) != -1)
+	if (soloOnly == true)
+	{
+		new client = GetClientOfUserId(voteCaller);
+		if (client <= 0 && client > MaxClients)
+		{
+			CreateTimer(0.5, Timer_ResetData);
+			return;
+		}
+
+		new onlyUs[1];
+		onlyUs[0] = client;
+		
+		voteFailed = StartMessage("VoteFailed", onlyUs, 1, USERMSG_RELIABLE);
+	}
+	else if (GetEntProp(entity, Prop_Send, "m_iOnlyTeamToVote", -1) != -1)
 	{
 		new sendto[MaxClients];
 		new index = 0;
@@ -36,5 +50,11 @@ VoteFail(int reason)
 	*/
 	EndMessage();
 	
-	CreateTimer(0.5, Timer_ResetData);
+	if (voteTimeout != null)
+	{
+		KillTimer(voteTimeout);
+		voteTimeout = null;
+	}
+
+	CreateTimer(1.0, Timer_ResetData);
 }

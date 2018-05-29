@@ -86,7 +86,7 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 	
 	if (GameRules_GetProp("m_bIsQueuedMatchmaking", 1) == 0) return Plugin_Continue;
 	
-	if (strcmp(option, "surrender", false) == 0)
+	if (strcmp(option, "Surrender", false) == 0)
 	{
 		// This vote ONLY works if we are not in an event
 		new String:eventName[512];
@@ -111,6 +111,7 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		passString = "#SFUI_vote_passed_surrender";
 		passDetailsString = "";
 		isTeamOnly = true;
+		soloOnly = false;
 		
 		issueFound = true;
 	}
@@ -157,6 +158,7 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		passString = "#SFUI_vote_passed_ready_for_match";
 		passDetailsString = "";
 		isTeamOnly = false;
+		soloOnly = false;
 		
 		issueFound = true;
 	}
@@ -194,6 +196,7 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		passString = "#SFUI_vote_passed_not_ready_for_match";
 		passDetailsString = "";
 		isTeamOnly = false;
+		soloOnly = true;
 		
 		issueFound = true;
 	}
@@ -222,6 +225,7 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		passString = "#SFUI_vote_passed_pause_match";
 		passDetailsString = "";
 		isTeamOnly = false;
+		soloOnly = true;
 		
 		issueFound = true;
 	}
@@ -250,6 +254,7 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		passString = "#SFUI_vote_passed_unpause_match";
 		passDetailsString = "";
 		isTeamOnly = false;
+		soloOnly = false;
 		
 		issueFound = true;
 	}
@@ -282,6 +287,7 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		passString = "#SFUI_vote_passed_loadbackup";
 		passDetailsString = option2;
 		isTeamOnly = false;
+		soloOnly = false;
 		
 		issueFound = true;
 	}
@@ -311,6 +317,15 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 			return Plugin_Handled;
 		}
 		
+		if (canSurrender == false)
+		{
+			new Handle:voteStart = StartMessage("CallVoteFailed", onlyUs, 1, USERMSG_RELIABLE);
+			PbSetInt(voteStart, "reason", 5);
+			PbSetInt(voteStart, "time", -1);
+			EndMessage();
+			return Plugin_Handled;
+		}
+
 		float tTimeoutsRemaining = GameRules_GetPropFloat("m_flTerroristTimeOutRemaining");
 		float ctTimeoutsRemaining = GameRules_GetPropFloat("m_flCTTimeOutRemaining");
 		int tTimeoutsLeft = RoundToNearest(tTimeoutsRemaining);
@@ -332,6 +347,7 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		passString = "#SFUI_vote_passed_timeout";
 		passDetailsString = "";
 		isTeamOnly = true;
+		soloOnly = false;
 		
 		issueFound = true;
 
@@ -339,24 +355,44 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		// If you want the game to handle it (it will need 51% of the votes to pass - The plugin only requires 1 single vote)
 		// Then uncomment the "return Plugin_Continue" at the top of this if statement
 	}
+	else if (strcmp(option, "Kick", false) == 0)
+	{
+		// This vote ONLY works if we are not in an event
+		new String:eventName[512];
+		GameRules_GetPropString("m_szTournamentEventName", eventName, sizeof(eventName));
+		if (GameRules_GetProp("m_bIsQueuedMatchmaking", 1) == 1 && strlen(eventName) > 0) return Plugin_Handled;
+
+		return Plugin_Continue; // Make the game handle kicking
+	}
 	
-	if (issueFound) CreateTimer(0.0, Timer_StartVote, client);
-	
+	if (issueFound)
+	{
+		CreateTimer(0.0, Timer_StartVote, GetClientUserId(client));
+		voteTimeout = CreateTimer(60.0, Timer_VoteTimeout, GetClientUserId(client));
+	}
+
 	return Plugin_Handled;
 }
 
-public Action:Timer_StartVote(Handle:timer, any:client)
+public Action:Timer_StartVote(Handle:timer, any:userid)
 {
+	new client = GetClientOfUserId(userid);
+	if (client <= 0 && client > MaxClients)
+	{
+		return;
+	}
+
 	new entity = FindEntityByClassname(-1, "vote_controller");
 	
 	if (entity < 0) return;
 	
 	SetEntProp(entity, Prop_Send, "m_iActiveIssueIndex", voteType); // 1 = Idk Restarting Round or smth?
 	
-	if (isTeamOnly == true) SetEntProp(entity, Prop_Send, "m_nPotentialVotes", RealPlayerCount(client, true, true));
+	if (soloOnly == true) SetEntProp(entity, Prop_Send, "m_nPotentialVotes", 1);
+	else if (isTeamOnly == true) SetEntProp(entity, Prop_Send, "m_nPotentialVotes", RealPlayerCount(client, true, true));
 	else SetEntProp(entity, Prop_Send, "m_nPotentialVotes", RealPlayerCount(client, true, false));
 	
-	if (isTeamOnly == true) SetEntProp(entity, Prop_Send, "m_iOnlyTeamToVote", GetClientTeam(client));
+	if (isTeamOnly == true || soloOnly == true) SetEntProp(entity, Prop_Send, "m_iOnlyTeamToVote", GetClientTeam(client));
 	else SetEntProp(entity, Prop_Send, "m_iOnlyTeamToVote", -1);
 	
 	SetEntProp(entity, Prop_Send, "m_bIsYesNoVote", true);
@@ -371,7 +407,7 @@ public Action:Timer_voteStart(Handle:timer, any:userid)
 	new client = GetClientOfUserId(userid);
 	if (client <= 0 && client > MaxClients)
 	{
-		return Plugin_Continue;
+		return;
 	}
 	
 	new Handle:voteStart;
@@ -389,12 +425,19 @@ public Action:Timer_voteStart(Handle:timer, any:userid)
 		}
 		voteStart = StartMessage("VoteStart", sendto, index, USERMSG_RELIABLE);
 	}
+	else if (soloOnly == true)
+	{
+		new onlyUs[1];
+		onlyUs[0] = client;
+
+		voteStart = StartMessage("VoteStart", onlyUs, 1, USERMSG_RELIABLE);
+	}
 	else
 	{
 		voteStart = StartMessageAll("VoteStart", USERMSG_RELIABLE);
 	}
 	
-	if (isTeamOnly == true) PbSetInt(voteStart, "team", GetClientTeam(client)); // -1 = All, 0 = Unassigned, 1 = Spectators, 2 = Terrorists, 3 = Counter-Terrorists
+	if (isTeamOnly == true || soloOnly == true) PbSetInt(voteStart, "team", GetClientTeam(client)); // -1 = All, 0 = Unassigned, 1 = Spectators, 2 = Terrorists, 3 = Counter-Terrorists
 	else PbSetInt(voteStart, "team", -1); // -1 = All, 0 = Unassigned, 1 = Spectators, 2 = Terrorists, 3 = Counter-Terrorists
 	
 	PbSetInt(voteStart, "ent_idx", client); // Vote caller
@@ -406,7 +449,8 @@ public Action:Timer_voteStart(Handle:timer, any:userid)
 	EndMessage();
 	
 	CreateTimer(0.0, Timer_VoteCast, GetClientUserId(client));
-	return Plugin_Handled;
+	voteCaller = GetClientUserId(client);
+	return;
 }
 
 public Action:Timer_VoteCast(Handle:timer, any:userid)

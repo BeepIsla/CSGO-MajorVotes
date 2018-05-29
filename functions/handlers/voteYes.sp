@@ -4,6 +4,7 @@ voteYes(client)
 	SetEventInt(castVote, "vote_option", 0);
 	
 	if (isTeamOnly == true) SetEventInt(castVote, "team", GetClientTeam(client));
+	else if (soloOnly == true) SetEventInt(castVote, "team", 0);
 	else SetEventInt(castVote, "team", -1);
 	
 	SetEventInt(castVote, "entityid", client);

@@ -18,7 +18,8 @@ public Action:Listener_Listissues(client, const String:command[], int argc)
 	else if (GameRules_GetProp("m_bIsQueuedMatchmaking", 1) == 1)
 	{
 		PrintToConsole(client, "---Vote commands---");
-		PrintToConsole(client, "callvote surrender");
+		if (GetConVarBool(FindConVar("sv_vote_issue_kick_allowed")) == true) PrintToConsole(client, "callvote Kick <userID>");
+		PrintToConsole(client, "callvote Surrender");
 		PrintToConsole(client, "callvote StartTimeout");
 		PrintToConsole(client, "--- End Vote commands---");
 		return Plugin_Handled;

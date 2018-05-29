@@ -4,6 +4,7 @@ voteNo(client)
 	SetEventInt(castVote, "vote_option", 1);
 	
 	if (isTeamOnly == true) SetEventInt(castVote, "team", GetClientTeam(client));
+	else if (soloOnly == true) SetEventInt(castVote, "team", 0); // Technically that can NEVER happen - The creator cant vote no
 	else SetEventInt(castVote, "team", -1);
 	
 	SetEventInt(castVote, "entityid", client);

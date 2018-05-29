@@ -18,7 +18,7 @@ public Action:Timer_GetResults(Handle:timer, any:userid)
 			if (DidWePassQuorumRatio(option1, option2, 100))
 			{
 				VotePass();
-				CreateTimer(1.0, Timer_DoSurrender, teamOnly);
+				CreateTimer(0.5, Timer_DoSurrender, teamOnly);
 				canSurrender = false;
 			}
 			else
@@ -34,7 +34,7 @@ public Action:Timer_GetResults(Handle:timer, any:userid)
 			if (DidWePassQuorumRatio(option1, option2, 100))
 			{
 				VotePass();
-				CreateTimer(1.0, Timer_DoReadyForMatch);
+				CreateTimer(0.5, Timer_DoReadyForMatch);
 			}
 			else
 			{
@@ -47,7 +47,7 @@ public Action:Timer_GetResults(Handle:timer, any:userid)
 		if (option1 >= 1)
 		{
 			VotePass();
-			CreateTimer(1.0, Timer_DoNotReadyForMatch);
+			CreateTimer(0.5, Timer_DoNotReadyForMatch);
 		}
 	}
 	else if (activeIssue == 3) // PauseMatch
@@ -55,7 +55,7 @@ public Action:Timer_GetResults(Handle:timer, any:userid)
 		if (option1 >= 1)
 		{
 			VotePass();
-			CreateTimer(1.0, Timer_DoPauseMatch);
+			CreateTimer(0.5, Timer_DoPauseMatch);
 		}
 	}
 	else if (activeIssue == 4) // UnpauseMatch
@@ -65,7 +65,7 @@ public Action:Timer_GetResults(Handle:timer, any:userid)
 			if (DidWePassQuorumRatio(option1, option2, 100))
 			{
 				VotePass();
-				CreateTimer(1.0, Timer_DoUnpauseMatch);
+				CreateTimer(0.5, Timer_DoUnpauseMatch);
 			}
 			else
 			{
@@ -80,7 +80,7 @@ public Action:Timer_GetResults(Handle:timer, any:userid)
 			if (DidWePassQuorumRatio(option1, option2, 100))
 			{
 				VotePass();
-				CreateTimer(1.0, Timer_DoLoadBackup);
+				CreateTimer(0.5, Timer_DoLoadBackup);
 			}
 			else
 			{
@@ -93,7 +93,7 @@ public Action:Timer_GetResults(Handle:timer, any:userid)
 		if (option1 >= 1)
 		{
 			VotePass();
-			CreateTimer(1.0, Timer_DoStartTimeout, teamOnly);
+			CreateTimer(0.5, Timer_DoStartTimeout, teamOnly);
 		}
 	}
 	
