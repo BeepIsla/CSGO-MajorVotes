@@ -7,7 +7,7 @@ public Plugin myinfo = {
 	name        = "Ingame Tournament Votes",
 	author      = "github.com/BeepFelix",
 	description = "Allows users to use the ingame votes seen in Major Tournaments such as \"Load Backup\", \"Pause during freezetime\", \"Begin warmup countdown to match start\", etc",
-	version     = "2.0"
+	version     = "2.1"
 };
 
 int teamVoteID = -1;
