@@ -24,6 +24,7 @@ The plugin also listens to "listissues". It is a command for clients only which 
 - Some votes show for everyone even tho only the caller should see them
 - Making a timeout at the right time during the halftime screen will cause a timeout for the enemy team
 - Votes never time out and last for a infinite amount of time
+- Stopping the warmup countdown causes a "Trying to resolve a vote that is not a YES/NO vote, YES/NO votes aren't currently supported!" error in the server console
 
 **2.0:**
 - Removed the requirement for NativeVotes
