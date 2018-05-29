@@ -1,4 +1,4 @@
-# CSGO-IngameVotes v2.0
+# CSGO-IngameVotes v2
 
 **WARNING: I did not properly test it because I don't own a server nor have enough friends to test it with. Please try it out and report back to me. Preferrably on Discord (Felix#2343)**
 
