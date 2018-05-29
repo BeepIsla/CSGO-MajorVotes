@@ -20,6 +20,8 @@ If a vote passes or fails the plugin again fiddles around with the vote_controll
 
 The plugin also listens to "listissues". It is a command for clients only which lists all the possible votes. Due to CSGO being kinda weird the original list of issues (votes) is wrong, it lists for example "callvote changelevel <mapname>" even if the issue is disabled via the available ingame commands. It also doesn't list the custom ones I added (They are not really custom but the game kinda gets tricked. Its a bit awkward) so basically the plugin overrides the original list of issues with a custom list I made with the plugin.
 
+All strings the plugin uses which the players see are original Valve translation strings found in "<csgodir>/csgo/resource/csgo_<language>.txt"
+
 # Changelog:
 
 **Known bugs:**
