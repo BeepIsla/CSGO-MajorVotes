@@ -53,7 +53,7 @@ public void OnMapStart()
 	for (int i = 0; i < MAXPLAYERS + 1; i++) alreadyVoted[i] = false;
 	
 	GameRules_SetProp("m_bIsQueuedMatchmaking", 1); // Change this in combination of "m_szTournamentEventName" to achieve different plugin-results
-	GameRules_SetPropString("m_szTournamentEventName", ""); // Change this in combination of "m_bIsQueuedMatchmaking" to achieve different plugin-results
+	GameRules_SetPropString("m_szTournamentEventName", "Tournament Test Event"); // Change this in combination of "m_bIsQueuedMatchmaking" to achieve different plugin-results
 
 	/*
 	How the aboves work:
