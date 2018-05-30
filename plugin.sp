@@ -67,7 +67,7 @@ public void OnMapStart()
 			- It disables "surrender"
 	*/
 
-	ServerCommand("mp_win_panel_display_time 0"); // This is required to make the scoreboard show up instantly as soon as the match is over or halftime happened
+	ServerCommand("mp_win_panel_display_time 0.1"); // This is required to make the scoreboard show up instantly as soon as the match is over or halftime happened
 }
 
 #include "./functions/listeners/listissues.sp"
