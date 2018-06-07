@@ -25,7 +25,7 @@ All strings the plugin uses which the players see are original Valve translation
 # Changelog:
 
 **Known bugs:**
-- Surrendering and timeouts tirggered at the exact perfect time will cause them to happen for the wrong team - The possibility of that happening is very low but the chance is still there.
+- Surrendering and timeouts tirggered at the exact perfect time will cause them to happen for the wrong team - The possibility of that happening is very low but the chance is still there - This can ONLY happen right as halftime/matchend/overtime comes up.
 
 **2.1:**
 - Added proper chat messages when someone pauses the match or stops the warmup countdown
