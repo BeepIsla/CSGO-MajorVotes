@@ -3,6 +3,8 @@
 # NOT PANORAMA UI COMPATIBLE
 **It crashes your game when you open the scoreboard**
 
+---
+
 # Important Note
 **This plugin's main purpose is for Tournaments or Pugs. It is not intended to be used for a public community server with votekick and votemap and similar stuff. If you want something like that I recommend you learn how to make your own plugins and you use [NativeVotes](https://forums.alliedmods.net/showthread.php?t=208008)**
 
