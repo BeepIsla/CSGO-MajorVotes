@@ -1,7 +1,7 @@
 # CSGO-IngameVotes v2
 
 # NOT PANORAMA UI COMPATIBLE
-**It crashes your game when you open the scoreboard**
+**Setting the netvars needed for this plugin crashes the client's game when they open the scoreboard**
 
 ---
 
