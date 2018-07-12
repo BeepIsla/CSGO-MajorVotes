@@ -1,14 +1,15 @@
-# CSGO-IngameVotes v2
+# CSGO-MajorVotes v2
+
+---
 
 # NOT PANORAMA UI COMPATIBLE
 **Setting the netvars needed for this plugin crashes the client's game when they open the scoreboard**
 
 ---
 
-# Important Note
-**This plugin's main purpose is for Tournaments or Pugs. It is not intended to be used for a public community server with votekick and votemap and similar stuff. If you want something like that I recommend you learn how to make your own plugins and you use [NativeVotes](https://forums.alliedmods.net/showthread.php?t=208008)**
+This plugin is for 10man's, Tournaments, or whatever you want to use it for. I will never add thing like "Mapvote" or similar to it.
 
-**WARNING: I did not properly test it because I don't own a server nor have enough friends to test it with. Please try it out and report back to me. Preferrably on Discord (Felix#2343)**
+**For issues add me on Discord: Felix#2343**
 
 Info: "m_bIsQueuedMatchmaking" is required for the major-like voting style in "ESC > Call Vote" but it forcefully disables the teammenu so you might have to create your own work around or teammanager. You can use "jointeam ct" or "jointeam t" in console to join a team altho I still recommend making your own team manager plugin or similar.
 
