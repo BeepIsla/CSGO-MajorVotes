@@ -4,7 +4,7 @@
 #include <valve>
 
 public Plugin myinfo = {
-	name        = "Ingame Tournament Votes",
+	name        = "Major Votes",
 	author      = "github.com/BeepFelix",
 	description = "Allows users to use the ingame votes seen in Major Tournaments such as \"Load Backup\", \"Pause during freezetime\", \"Begin warmup countdown to match start\", etc",
 	version     = "2.1"
