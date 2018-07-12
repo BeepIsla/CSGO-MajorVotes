@@ -2,9 +2,12 @@
 
 ---
 
-# NOT PANORAMA UI COMPATIBLE
+# **NOT PANORAMA UI COMPATIBLE**
+
 **Setting the netvars needed for this plugin crashes the client's game when they open the scoreboard**
 
+---
+---
 ---
 
 This plugin is for 10man's, Tournaments, or whatever you want to use it for. I will never add thing like "Mapvote" or similar to it.
@@ -20,7 +23,7 @@ Using the settings "m_szTournamentEventName" and "m_bIsQueuedMatchmaking" you ca
 [Example how the vote menu looks like 2](https://cdn.discordapp.com/attachments/426980696809144321/427424570518142976/Unbenannt2.PNG)
 
 # Credit:
-- **Thanks to [Powerlord](https://forums.alliedmods.net/member.php?u=38996)** for making the original [NativeVotes](https://forums.alliedmods.net/showthread.php?t=208008), [csgo_votestart_test](https://github.com/powerlord/sourcemod-nativevotes/blob/master/addons/sourcemod/scripting/csgo_votestart_test.sp), [votediagnostics](https://github.com/powerlord/sourcemod-nativevotes/blob/master/addons/sourcemod/scripting/votediagnostics.sp) and for making a [simple include](https://github.com/powerlord/sourcemod-tf2-scramble/blob/master/addons/sourcemod/scripting/include/valve.inc) which allowed me to easily use Valve translation strings with custom values such as names.
+- **Thanks to [Powerlord](https://forums.alliedmods.net/member.php?u=38996)** for making the original [NativeVotes](https://forums.alliedmods.net/showthread.php?t=208008), [csgo_votestart_test](https://github.com/powerlord/sourcemod-nativevotes/blob/master/addons/sourcemod/scripting/csgo_votestart_test.sp), [votediagnostics](https://github.com/powerlord/sourcemod-nativevotes/blob/master/addons/sourcemod/scripting/votediagnostics.sp) and for making a [simple include](https://github.com/powerlord/sourcemod-tf2-scramble/blob/master/addons/sourcemod/scripting/include/valve.inc) which allowed me to easily use Valve translation strings with custom values such as names. Without these plugins and their code I would have never been able to understand how votes in CSGO works. Big big thanks to [Powerlord](https://forums.alliedmods.net/member.php?u=38996)!
 
 # Full explanation to what this plugin all does:
 This plugin listens to the "callvote" command which is automatically executed when you press a option on the vote menu. It then fiddles around with the vote_controller and [UserMessages](https://wiki.alliedmods.net/Counter-Strike:_Global_Offensive_UserMessages) to create a vote on the left side of your screen. The plugin also listens to the "vote" command. It is execute when you press F1 or F2 to vote, the command is ONLY executed if a vote actually exists. After every successful vote the plugin checks if there are enough Yes/No votes and if a quorum ratio is fulfilled. Some of the votes only require 1 vote to succeed. Some require all 10 players. That was not possible with [NativeVotes](https://forums.alliedmods.net/showthread.php?t=208008) so I had to figure out how votes in CSGO work to try and re-create it.
