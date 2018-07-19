@@ -1,15 +1,5 @@
 # CSGO-MajorVotes v2
 
----
-
-# **NOT PANORAMA UI COMPATIBLE**
-
-**Setting the netvars needed for this plugin crashes the client's game when they open the scoreboard**
-
----
----
----
-
 This plugin is for 10man's, Tournaments, or whatever you want to use it for. I will never add thing like "Mapvote" or similar to it.
 
 **For issues add me on Discord: Felix#2343**
