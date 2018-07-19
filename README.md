@@ -1,5 +1,7 @@
 # CSGO-MajorVotes v2
 
+**The votes "Ready for Match" and "Not Ready for Match" are switched around since one of the recent updates. Waiting for Valve to fix it, again.**
+
 This plugin is for 10man's, Tournaments, or whatever you want to use it for. I will never add thing like "Mapvote" or similar to it.
 
 **For issues add me on Discord: Felix#2343**
