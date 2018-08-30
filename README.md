@@ -1,6 +1,18 @@
 # CSGO-MajorVotes v2
 
-**The votes "Ready for Match" and "Not Ready for Match" are switched around since one of the recent updates. Waiting for Valve to fix it, again.**
+**Working on an update to support latest changes**
+
+## Changes Valve made to the voting UI
+- Only spectators can call a vote to start/stop the warmup countdown
+- Only spectators can call a vote to unpause the match
+- Only spectators can call a vote to load round backups
+- Ingame players can only vote for a tactical timeout and technical pause
+
+As much as I do not like these changes because it forces us to have at least one spectator in each match I cannot change it.
+
+---
+---
+---
 
 This plugin is for 10man's, Tournaments, or whatever you want to use it for. I will never add thing like "Mapvote" or similar to it.
 
