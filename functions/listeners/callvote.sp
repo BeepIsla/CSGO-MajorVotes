@@ -69,16 +69,6 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		return Plugin_Handled;
 	}
 	
-	if (GetClientTeam(client) != CS_TEAM_CT && GetClientTeam(client) != CS_TEAM_T)
-	{
-		new Handle:voteStart = StartMessage("CallVoteFailed", onlyUs, 1, USERMSG_RELIABLE);
-		PbSetInt(voteStart, "reason", 14);
-		PbSetInt(voteStart, "time", -1);
-		EndMessage();
-		
-		return Plugin_Continue;
-	}
-	
 	new bool:issueFound = false;
 	
 	new String:option[512];
@@ -86,7 +76,7 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 	
 	if (GameRules_GetProp("m_bIsQueuedMatchmaking", 1) == 0) return Plugin_Continue;
 	
-	if (strcmp(option, "Surrender", false) == 0)
+	if (strcmp(option, "Surrender", false) == 0 && (GetClientTeam(client) == CS_TEAM_CT || GetClientTeam(client) == CS_TEAM_T))
 	{
 		// This vote ONLY works if we are not in an event
 		new String:eventName[512];
@@ -94,6 +84,15 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		if (GameRules_GetProp("m_bIsQueuedMatchmaking", 1) == 1 && strlen(eventName) > 0) return Plugin_Handled;
 		
 		// Do fail checks
+		if (GameRules_GetProp("m_bMatchWaitingForResume") == 1)
+		{
+			new Handle:voteStart = StartMessage("CallVoteFailed", onlyUs, 1, USERMSG_RELIABLE);
+			PbSetInt(voteStart, "reason", 26);
+			PbSetInt(voteStart, "time", -1);
+			EndMessage();
+			return Plugin_Handled;
+		}
+
 		if (canSurrender == false)
 		{
 			new Handle:voteStart = StartMessage("CallVoteFailed", onlyUs, 1, USERMSG_RELIABLE);
@@ -115,7 +114,7 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		
 		issueFound = true;
 	}
-	else if (strcmp(option, "ReadyForMatch", false) == 0)
+	else if (strcmp(option, "ReadyForMatch", false) == 0 && GetClientTeam(client) == CS_TEAM_SPECTATOR)
 	{
 		// This vote ONLY works if we are in an event
 		new String:eventName[512];
@@ -141,7 +140,10 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 			return Plugin_Handled;
 		}
 
-		if (RealPlayerCount(client, true, false) < 10)
+		new requiredPlayers = 10;
+		if (GetConVarInt(g_hPlayersNeeded) > 0) requiredPlayers = GetConVarInt(g_hPlayersNeeded);
+
+		if (RealPlayerCount(client, true, false, true) < requiredPlayers)
 		{
 			new Handle:voteStart = StartMessage("CallVoteFailed", onlyUs, 1, USERMSG_RELIABLE);
 			PbSetInt(voteStart, "reason", 29);
@@ -162,7 +164,7 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		
 		issueFound = true;
 	}
-	else if (strcmp(option, "NotReadyForMatch", false) == 0)
+	else if (strcmp(option, "NotReadyForMatch", false) == 0 && GetClientTeam(client) == CS_TEAM_SPECTATOR)
 	{
 		// This vote ONLY works if we are in an event
 		new String:eventName[512];
@@ -200,7 +202,7 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		
 		issueFound = true;
 	}
-	else if (strcmp(option, "PauseMatch", false) == 0)
+	else if (strcmp(option, "PauseMatch", false) == 0 && (GetClientTeam(client) == CS_TEAM_CT || GetClientTeam(client) == CS_TEAM_T || GetClientTeam(client) == CS_TEAM_SPECTATOR))
 	{
 		// This vote ONLY works if we are in an event
 		new String:eventName[512];
@@ -229,7 +231,7 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		
 		issueFound = true;
 	}
-	else if (strcmp(option, "UnpauseMatch", false) == 0)
+	else if (strcmp(option, "UnpauseMatch", false) == 0 && GetClientTeam(client) == CS_TEAM_SPECTATOR)
 	{
 		// This vote ONLY works if we are in an event
 		new String:eventName[512];
@@ -258,7 +260,7 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		
 		issueFound = true;
 	}
-	else if (strcmp(option, "LoadBackup", false) == 0)
+	else if (strcmp(option, "LoadBackup", false) == 0 && GetClientTeam(client) == CS_TEAM_SPECTATOR)
 	{
 		// This vote ONLY works if we are in an event
 		new String:eventName[512];
@@ -291,13 +293,14 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		
 		issueFound = true;
 	}
-	else if (strcmp(option, "StartTimeout", false) == 0)
+	else if (strcmp(option, "StartTimeout", false) == 0 && (GetClientTeam(client) == CS_TEAM_CT || GetClientTeam(client) == CS_TEAM_T))
 	{
-		// This vote works if we are in an event AND if we are not
+		// Let the game handle the votes if we are NOT in an event
+		new String:eventName[512];
+		GameRules_GetPropString("m_szTournamentEventName", eventName, sizeof(eventName));
+		if (GameRules_GetProp("m_bIsQueuedMatchmaking", 1) == 1 && strlen(eventName) <= 0) return Plugin_Continue;
+		// Else le tthe plugin handle the votes
 
-		// return Plugin_Continue;
-		// Uncomment this if you want (Explanation at the bottom of the if statement)
-		
 		// Do fail checks
 		if (GameRules_GetProp("m_bTerroristTimeOutActive") == 1 || GameRules_GetProp("m_bCTTimeOutActive") == 1)
 		{
@@ -326,10 +329,9 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 			return Plugin_Handled;
 		}
 
-		float tTimeoutsRemaining = GameRules_GetPropFloat("m_flTerroristTimeOutRemaining");
-		float ctTimeoutsRemaining = GameRules_GetPropFloat("m_flCTTimeOutRemaining");
-		int tTimeoutsLeft = RoundToNearest(tTimeoutsRemaining);
-		int ctTimeoutsLeft = RoundToNearest(ctTimeoutsRemaining);
+		int tTimeoutsLeft = GameRules_GetProp("m_nTerroristTimeOuts", 1);
+		int ctTimeoutsLeft = GameRules_GetProp("m_nCTTimeOuts", 1);
+
 		if (GetClientTeam(client) == CS_TEAM_CT && ctTimeoutsLeft <= 0 || GetClientTeam(client) == CS_TEAM_T && tTimeoutsLeft <= 0)
 		{
 			new Handle:voteStart = StartMessage("CallVoteFailed", onlyUs, 1, USERMSG_RELIABLE);
@@ -350,12 +352,8 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		soloOnly = false;
 		
 		issueFound = true;
-
-		// This is technically irrelevant. The game can handle timeout votes by itself. I still included it just so this plugin is complete
-		// If you want the game to handle it (it will need 51% of the votes to pass - The plugin only requires 1 single vote)
-		// Then uncomment the "return Plugin_Continue" at the top of this if statement
 	}
-	else if (strcmp(option, "Kick", false) == 0)
+	else if (strcmp(option, "Kick", false) == 0) // (GetClientTeam(client) == CS_TEAM_CT || GetClientTeam(client) == CS_TEAM_T) (Game handles kicking - Checks not required)
 	{
 		// This vote ONLY works if we are not in an event
 		new String:eventName[512];
@@ -368,7 +366,12 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 	if (issueFound)
 	{
 		CreateTimer(0.0, Timer_StartVote, GetClientUserId(client));
-		voteTimeout = CreateTimer(60.0, Timer_VoteTimeout, GetClientUserId(client));
+		voteTimeout = CreateTimer(GetConVarFloat(FindConVar("sv_vote_timer_duration")), Timer_VoteTimeout, GetClientUserId(client));
+	} else {
+		new Handle:voteStart = StartMessage("CallVoteFailed", onlyUs, 1, USERMSG_RELIABLE);
+		PbSetInt(voteStart, "reason", 14);
+		PbSetInt(voteStart, "time", -1);
+		EndMessage();
 	}
 
 	return Plugin_Handled;
@@ -386,11 +389,11 @@ public Action:Timer_StartVote(Handle:timer, any:userid)
 	
 	if (entity < 0) return;
 	
-	SetEntProp(entity, Prop_Send, "m_iActiveIssueIndex", voteType); // 1 = Idk Restarting Round or smth?
+	SetEntProp(entity, Prop_Send, "m_iActiveIssueIndex", voteType);
 	
 	if (soloOnly == true) SetEntProp(entity, Prop_Send, "m_nPotentialVotes", 1);
-	else if (isTeamOnly == true) SetEntProp(entity, Prop_Send, "m_nPotentialVotes", RealPlayerCount(client, true, true));
-	else SetEntProp(entity, Prop_Send, "m_nPotentialVotes", RealPlayerCount(client, true, false));
+	else if (isTeamOnly == true) SetEntProp(entity, Prop_Send, "m_nPotentialVotes", RealPlayerCount(client, true, true, false));
+	else SetEntProp(entity, Prop_Send, "m_nPotentialVotes", RealPlayerCount(client, true, false, false));
 	
 	if (isTeamOnly == true || soloOnly == true) SetEntProp(entity, Prop_Send, "m_iOnlyTeamToVote", GetClientTeam(client));
 	else SetEntProp(entity, Prop_Send, "m_iOnlyTeamToVote", -1);

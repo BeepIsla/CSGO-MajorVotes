@@ -11,5 +11,5 @@ public Action:Timer_DoNotReadyForMatch(Handle:timer)
 	}
 	new String:ClientName[512];
 	GetClientName(client, ClientName, sizeof(ClientName));
-	PrintValveTranslationToAll(HUD_PRINTTALK, "#SFUI_vote_passed_not_ready_for_match_chat", ClientName);
+	PrintValveTranslationToAll(3, "#SFUI_vote_passed_not_ready_for_match_chat", ClientName);
 }

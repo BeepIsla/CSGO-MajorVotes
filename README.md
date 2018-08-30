@@ -1,47 +1,50 @@
 # CSGO-MajorVotes v2
 
-**Working on an update to support latest changes**
-
-## Changes Valve made to the voting UI
-- Only spectators can call a vote to start/stop the warmup countdown
-- Only spectators can call a vote to unpause the match
-- Only spectators can call a vote to load round backups
-- Ingame players can only vote for a tactical timeout and technical pause
-
-As much as I do not like these changes because it forces us to have at least one spectator in each match I cannot change it.
-
----
----
----
-
 This plugin is for 10man's, Tournaments, or whatever you want to use it for. I will never add thing like "Mapvote" or similar to it.
+
+I recommend using the `example_server_settings_matchmaking.cfg` config as a base for your server config if you use the matchmaking mode. Same the other way around for the `example_server_settings_tournament.cfg` config for tournament mode.
+
+[Showcase Album (Tournament Mode)](https://imgur.com/a/sZoTdYM)
+
+[Showcase Album (Matchmaking Mode)](https://imgur.com/a/MPkMFGn)
 
 **For issues add me on Discord: Felix#2343**
 
-Info: "m_bIsQueuedMatchmaking" is required for the major-like voting style in "ESC > Call Vote" but it forcefully disables the teammenu so you might have to create your own work around or teammanager. You can use "jointeam ct" or "jointeam t" in console to join a team altho I still recommend making your own team manager plugin or similar.
-
-Using the settings "m_szTournamentEventName" and "m_bIsQueuedMatchmaking" you can create major-similar matches that use the ingame voting system. You still have to handle the votes yourself, using NativeVotes for example, like I do in this example plugin.
-
-[Example how the vote menu looks like 1](https://cdn.discordapp.com/attachments/426980696809144321/427424569087885332/Unbenannt.PNG)
-
-[Example how the vote menu looks like 2](https://cdn.discordapp.com/attachments/426980696809144321/427424570518142976/Unbenannt2.PNG)
+[Small plugin explanation to understand a little how this all works.](pluginExplanation.md)
 
 # Credit:
-- **Thanks to [Powerlord](https://forums.alliedmods.net/member.php?u=38996)** for making the original [NativeVotes](https://forums.alliedmods.net/showthread.php?t=208008), [csgo_votestart_test](https://github.com/powerlord/sourcemod-nativevotes/blob/master/addons/sourcemod/scripting/csgo_votestart_test.sp), [votediagnostics](https://github.com/powerlord/sourcemod-nativevotes/blob/master/addons/sourcemod/scripting/votediagnostics.sp) and for making a [simple include](https://github.com/powerlord/sourcemod-tf2-scramble/blob/master/addons/sourcemod/scripting/include/valve.inc) which allowed me to easily use Valve translation strings with custom values such as names. Without these plugins and their code I would have never been able to understand how votes in CSGO works. Big big thanks to [Powerlord](https://forums.alliedmods.net/member.php?u=38996)!
-
-# Full explanation to what this plugin all does:
-This plugin listens to the "callvote" command which is automatically executed when you press a option on the vote menu. It then fiddles around with the vote_controller and [UserMessages](https://wiki.alliedmods.net/Counter-Strike:_Global_Offensive_UserMessages) to create a vote on the left side of your screen. The plugin also listens to the "vote" command. It is execute when you press F1 or F2 to vote, the command is ONLY executed if a vote actually exists. After every successful vote the plugin checks if there are enough Yes/No votes and if a quorum ratio is fulfilled. Some of the votes only require 1 vote to succeed. Some require all 10 players. That was not possible with [NativeVotes](https://forums.alliedmods.net/showthread.php?t=208008) so I had to figure out how votes in CSGO work to try and re-create it.
-
-If a vote passes or fails the plugin again fiddles around with the vote_controller and [UserMessages](https://wiki.alliedmods.net/Counter-Strike:_Global_Offensive_UserMessages) to make the "Vote Passed" or "Vote Failed" screen appear. If a vote passes it checks the type of the vote we called and then does what the vote wants it to do. Eg: We vote to pause the match and if it succeeds the plugin executes "mp_pause_match" to pause the match. If a vote fails it just displays it and does nothing.
-
-The plugin also listens to "listissues". It is a command for clients only which lists all the possible votes. Due to CSGO being kinda weird the original list of issues (votes) is wrong, it lists for example "callvote changelevel <mapname>" even if the issue is disabled via the available ingame commands. It also doesn't list the custom ones I added (They are not really custom but the game kinda gets tricked. Its a bit awkward) so basically the plugin overrides the original list of issues with a custom list I made with the plugin.
-
-All strings the plugin uses which the players see are original Valve translation strings found in "<csgodir>/csgo/resource/csgo_<language>.txt"
+- **Thanks to [Powerlord](https://forums.alliedmods.net/member.php?u=38996)** for making the original [NativeVotes](https://forums.alliedmods.net/showthread.php?t=208008), [csgo_votestart_test](https://github.com/powerlord/sourcemod-nativevotes/blob/master/addons/sourcemod/scripting/csgo_votestart_test.sp), [votediagnostics](https://github.com/powerlord/sourcemod-nativevotes/blob/master/addons/sourcemod/scripting/votediagnostics.sp) plugins and for the "[valve.inc](https://github.com/powerlord/sourcemod-tf2-scramble/blob/master/addons/sourcemod/scripting/include/valve.inc)". Without these and I would have never been able to understand how votes in CSGO works. Big big thanks to [Powerlord](https://forums.alliedmods.net/member.php?u=38996)!
 
 # Changelog:
 
-**Known bugs:**
-- Surrendering and timeouts tirggered at the exact perfect time will cause them to happen for the wrong team - The possibility of that happening is very low but the chance is still there - This can ONLY happen right as halftime/matchend/overtime comes up.
+**2.2:**
+- **General**
+- - Added convars:
+- - - `sm_tournament_enabled`
+- - - - Default: `1`
+- - - - Description: `1 to enable the plugin. 0 to disable the plugin`
+- - - `sm_tournament_name`
+- - - - Default: `Tournament Test Event`
+- - - - Description: `The name of your tournament. Set to "" to enable matchmaking mode`
+- - - `sm_tournament_stage`
+- - - - Default: `Grand Final`
+- - - - Description: `Optional name of the stage. Set to "" for no stage`
+- - - `sm_tournament_players_to_start`
+- - - - Default `10`
+- - - - Description: `The needed player count in order to start a match. The warmup vote will always show "This vote requires 10 players" if the required player count is not met.`
+- - Votes now follow the ingame vote duration. (Eg: Change `sv_vote_timer_duration` to adjust voting duration)
+- - `sv_vote_timer_duration` is now being forced to a minimum of `1.0`
+
+- **Tournament Mode**
+- - **Ingame players can now only start a vote for a "Tactical Timeout" and a "Technical Pause".**
+- - - Spectators can call a vote to unpause the match, load backup, etc.
+- - - This is a Valve restriction due to the new voting UI
+- - - I highly recommend always having at least 1 spectator when using tournament mode.
+- - Fixed timeouts not working properly when using a value above `1` for  `mp_team_timeout_max`
+
+- **Matchmaking Mode**
+- - Matchmaking mode now uses the ingame way of handling timeouts
+- - Fixed being able to call a surrender vote during warmup
 
 **2.1:**
 - Added proper chat messages when someone pauses the match or stops the warmup countdown

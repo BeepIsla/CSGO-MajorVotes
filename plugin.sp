@@ -1,13 +1,12 @@
 #include <sourcemod>
 #include <sdktools>
 #include <cstrike>
-#include <valve>
 
 public Plugin myinfo = {
 	name        = "Major Votes",
 	author      = "github.com/BeepFelix",
-	description = "Allows users to use the ingame votes seen in Major Tournaments such as \"Load Backup\", \"Pause during freezetime\", \"Begin warmup countdown to match start\", etc",
-	version     = "2.1"
+	description = "Allows users to use the ingame votes seen in Major Tournaments such as \"Load Backup\", \"Pause during freezetime\", \"Begin warmup countdown to match start\", etc.",
+	version     = "2.2"
 };
 
 int teamVoteID = -1;
@@ -24,6 +23,11 @@ new bool:isVoteActive = false;
 new bool:alreadyVoted[MAXPLAYERS + 1];
 new bool:canSurrender = true;
 new Handle:voteTimeout = null;
+new ConVar:g_hEnabled = null;
+new ConVar:g_hEventName = null;
+new ConVar:g_hEventStage = null;
+new ConVar:g_hPlayersNeeded = null;
+new ConVar:g_hVoteDuration = null;
 
 public OnPluginStart()
 {
@@ -33,7 +37,41 @@ public OnPluginStart()
 	AddCommandListener(Listener_Callvote, "callvote");
 	AddCommandListener(Listener_Listissues, "listissues");
 
+	g_hEnabled = CreateConVar("sm_tournament_enabled", "1", "1 to enable the plugin. 0 to disable the plugin", _, true, 0.0, true, 1.0);
+	g_hEventName = CreateConVar("sm_tournament_name", "Tournament Test Event", "The name of your tournament set to \"\" to enable matchmaking mode");
+	g_hEventStage = CreateConVar("sm_tournament_stage", "Grand Final", "Optional name of the stage. Set to \"\" for no stage");
+	g_hPlayersNeeded = CreateConVar("sm_tournament_players_to_start", "10", "The needed player count in order to start a match. The warmup vote will always show \"This vote requires 10 players\" if the required player count is not met.", _, true, 1.0);
+	g_hVoteDuration = FindConVar("sv_vote_timer_duration");
+
+	g_hEnabled.AddChangeHook(OnConVarChange);
+	g_hEventName.AddChangeHook(OnConVarChange);
+	g_hEventStage.AddChangeHook(OnConVarChange);
+	g_hVoteDuration.AddChangeHook(OnConVarChange_voteDuration);
+
 	HookEvent("announce_phase_end", Event_AnnouncePhaseEnd) // Halftime/Win panel display event - Executes when the scoreboard automatically shows up
+
+	AutoExecConfig(true, "tournament");
+}
+
+public void OnConVarChange_voteDuration(ConVar convar, char[] oldValue, char[] newValue)
+{
+	if (GetConVarFloat(g_hVoteDuration) < 1.0)
+	{
+		SetConVarFloat(g_hVoteDuration, 1.0);
+	}
+}
+
+public void OnConVarChange(ConVar convar, char[] oldValue, char[] newValue)
+{
+	new String:eventName[512];
+	GetConVarString(g_hEventName, eventName, sizeof(eventName));
+
+	new String:eventStage[512];
+	GetConVarString(g_hEventStage, eventStage, sizeof(eventStage));
+
+	GameRules_SetProp("m_bIsQueuedMatchmaking", GetConVarInt(g_hEnabled));
+	GameRules_SetPropString("m_szTournamentEventName", eventName);
+	GameRules_SetPropString("m_szTournamentEventStage", eventStage);
 }
 
 public void OnClientConnected(client)
@@ -48,26 +86,22 @@ public void OnClientDisconnect(client)
 
 public void OnMapStart()
 {
+	new String:eventName[512];
+	GetConVarString(g_hEventName, eventName, sizeof(eventName));
+
+	new String:eventStage[512];
+	GetConVarString(g_hEventStage, eventStage, sizeof(eventStage));
+
+	GameRules_SetProp("m_bIsQueuedMatchmaking", GetConVarInt(g_hEnabled));
+	GameRules_SetPropString("m_szTournamentEventName", eventName);
+	GameRules_SetPropString("m_szTournamentEventStage", eventStage);
+
 	canSurrender = true;
 	
 	for (int i = 0; i < MAXPLAYERS + 1; i++) alreadyVoted[i] = false;
-	
-	GameRules_SetProp("m_bIsQueuedMatchmaking", 1); // Change this in combination of "m_szTournamentEventName" to achieve different plugin-results
-	GameRules_SetPropString("m_szTournamentEventName", "Tournament Test Event"); // Change this in combination of "m_bIsQueuedMatchmaking" to achieve different plugin-results
-
-	/*
-	How the aboves work:
-		- Set "m_bIsQueuedMatchmaking" to 0 to disable the plugin
-		- Set "m_szTournamentEventName" to "" to disable tournament votes
-			- It only enabled "StartTimeout" and "surrender"
-			- Everything else is disabled
-			- It technically also enabled "kick" but I did not implement it in the plugin - It is handled by the game
-		- Set "m_szTournamentEventName" to any string (it is shown in the top right on your scoreboard) to enable tournament votes
-			- It enables "ReadyForMatch" & "NotReadyForMatch" & "PauseMatch" & "UnpauseMatch" & "LoadBackup" & "StartTimeout"
-			- It disables "surrender"
-	*/
 
 	ServerCommand("mp_win_panel_display_time 0.1"); // This is required to make the scoreboard show up instantly as soon as the match is over or halftime happened
+	// TODO: Disallow surrender voting and timeout voting during last round of halftime / match end (Not during freezetime)
 }
 
 #include "./functions/listeners/listissues.sp"

@@ -10,5 +10,5 @@ public Action:Timer_DoPauseMatch(Handle:timer)
 	}
 	new String:ClientName[512];
 	GetClientName(client, ClientName, sizeof(ClientName));
-	PrintValveTranslationToAll(HUD_PRINTTALK, "#SFUI_vote_passed_pause_match_chat", ClientName);
+	PrintValveTranslationToAll(3, "#SFUI_vote_passed_pause_match_chat", ClientName);
 }

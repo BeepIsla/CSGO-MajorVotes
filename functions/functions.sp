@@ -12,7 +12,7 @@ DidWePassQuorumRatio(yesVotes, noVotes, quorum)
 	}
 }
 
-RealPlayerCount(client, bool:InGameOnly, bool:teamOnly)
+RealPlayerCount(client, bool:InGameOnly, bool:teamOnly, bool:noSpectators)
 {
 	new clientTeam = GetClientTeam(client);
 	new players = 0;
@@ -32,7 +32,17 @@ RealPlayerCount(client, bool:InGameOnly, bool:teamOnly)
 				}
 				else
 				{
-					players++;
+					if (noSpectators == true)
+					{
+						if (GetClientTeam(i) == CS_TEAM_CT || GetClientTeam(i) == CS_TEAM_T)
+						{
+							players++
+						}
+					}
+					else
+					{
+						players++;
+					}
 				}
 			}
 		}
@@ -75,4 +85,49 @@ public Action:Timer_ResetData(Handle:timer)
 		SetEntProp(entity, Prop_Send, "m_iOnlyTeamToVote", -1);
 		SetEntProp(entity, Prop_Send, "m_bIsYesNoVote", true);
 	}	
+}
+
+/*
+	Credit: https://github.com/powerlord/sourcemod-tf2-scramble/blob/master/addons/sourcemod/scripting/include/valve.inc#L18
+*/
+stock PrintValveTranslation(clients[], numClients, msg_dest, const String:msg_name[], const String:param1[]="", const String:param2[]="", const String:param3[]="", const String:param4[]="")
+{
+	new Handle:bf = StartMessage("TextMsg", clients, numClients, USERMSG_RELIABLE);
+	
+	if (GetUserMessageType() == UM_Protobuf)
+	{
+		PbSetInt(bf, "msg_dst", msg_dest);
+		PbAddString(bf, "params", msg_name);
+		
+		PbAddString(bf, "params", param1);
+		PbAddString(bf, "params", param2);
+		PbAddString(bf, "params", param3);
+		PbAddString(bf, "params", param4);
+	}
+	else
+	{
+		BfWriteByte(bf, msg_dest);
+		BfWriteString(bf, msg_name);
+		
+		BfWriteString(bf, param1);
+		BfWriteString(bf, param2);
+		BfWriteString(bf, param3);
+		BfWriteString(bf, param4);
+	}
+	
+	EndMessage();
+}
+
+stock PrintValveTranslationToAll(msg_dest, const String:msg_name[], const String:param1[]="", const String:param2[]="", const String:param3[]="", const String:param4[]="")
+{
+	new total = 0;
+	new clients[MaxClients];
+	for (new i=1; i<=MaxClients; i++)
+	{
+		if (IsClientConnected(i))
+		{
+			clients[total++] = i;
+		}
+	}
+	PrintValveTranslation(clients, total, msg_dest, msg_name, param1, param2, param3, param4);
 }
