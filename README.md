@@ -4,6 +4,8 @@ This plugin is for 10man's, Tournaments, or whatever you want to use it for. I w
 
 I recommend using the `example_server_settings_matchmaking.cfg` config as a base for your server config if you use the matchmaking mode. Same the other way around for the `example_server_settings_tournament.cfg` config for tournament mode.
 
+I recommend against loading backup files from other matches. They completely fuck up the game. I played 33 rounds in my test match which ended 21:12 before CSGO realised "oh wait the match is over".
+
 [Showcase Album (Tournament Mode)](https://imgur.com/a/sZoTdYM)
 
 [Showcase Album (Matchmaking Mode)](https://imgur.com/a/MPkMFGn)
@@ -15,7 +17,45 @@ I recommend using the `example_server_settings_matchmaking.cfg` config as a base
 # Credit:
 - **Thanks to [Powerlord](https://forums.alliedmods.net/member.php?u=38996)** for making the original [NativeVotes](https://forums.alliedmods.net/showthread.php?t=208008), [csgo_votestart_test](https://github.com/powerlord/sourcemod-nativevotes/blob/master/addons/sourcemod/scripting/csgo_votestart_test.sp), [votediagnostics](https://github.com/powerlord/sourcemod-nativevotes/blob/master/addons/sourcemod/scripting/votediagnostics.sp) plugins and for the "[valve.inc](https://github.com/powerlord/sourcemod-tf2-scramble/blob/master/addons/sourcemod/scripting/include/valve.inc)". Without these and I would have never been able to understand how votes in CSGO works. Big big thanks to [Powerlord](https://forums.alliedmods.net/member.php?u=38996)!
 
+# Convars
+### Custom
+- `sm_tournament_enabled`
+- - Default: `1`
+- - Description: `1 to enable the plugin. 0 to disable the plugin`
+- `sm_tournament_name`
+- - Default: `Tournament Test Event`
+- - Description: `The name of your tournament. Set to "" to enable matchmaking mode`
+- `sm_tournament_stage`
+- - Default: `Grand Final`
+- - Description: `Optional name of the stage. Set to "" for no stage`
+- `sm_tournament_players_to_start`
+- - Default `10`
+- - Description: `The needed player count in order to start a match. The warmup vote will always show "This vote requires 10 players" if the required player count is not met.`
+- `sm_tournament_disallow_suicide`
+- - Default: `1`
+- - Description: `Should we disable suiciding during the match?`
+
+### Default
+- `sv_vote_timer_duration`
+- - Controls the length of the votes before they timeout
+- - Minimum 1.0
+
 # Changelog:
+
+**2.2.1:**
+- **General**
+- - Added convars:
+- - - `sm_tournament_disallow_suicide`
+- - - - Default: `1`
+- - - - Description: `Should we disable suiciding during the match?`
+- - Fixed team-only votes not displaying properly
+
+- **Matchmaking Mode**
+- - Fixed not being able to call a surrender vote during freezetime pause
+- - Surrender votes are now disabled 1 round before and during halftime/matchend
+
+- **Tournament Mode**
+- - Fixed backup votes not working (Thanks Valve for breaking things)
 
 **2.2:**
 - **General**

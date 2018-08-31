@@ -14,7 +14,12 @@ DidWePassQuorumRatio(yesVotes, noVotes, quorum)
 
 RealPlayerCount(client, bool:InGameOnly, bool:teamOnly, bool:noSpectators)
 {
-	new clientTeam = GetClientTeam(client);
+	new clientTeam = CS_TEAM_NONE;
+
+	if (client > 0) {
+		clientTeam = GetClientTeam(client);
+	}
+
 	new players = 0;
 
 	for(new i = 1; i <= MaxClients; i++)
@@ -85,6 +90,29 @@ public Action:Timer_ResetData(Handle:timer)
 		SetEntProp(entity, Prop_Send, "m_iOnlyTeamToVote", -1);
 		SetEntProp(entity, Prop_Send, "m_bIsYesNoVote", true);
 	}	
+}
+
+public bool:isLoadBackup(String:buffer[])
+{
+	// Expected: "callvote loadbackup backup_round09.txt"
+	// What Valve now gives me: "callvote loadbackupbackup_round09.txt"
+	// Thanks Valve...
+	// (I didn't know "strncmp" existed but now I am too lazy to change this function again so I just keep it)
+
+	if (strlen(buffer) < 10) return false;
+
+	if (buffer[0] != 'l') return false;
+	if (buffer[1] != 'o') return false;
+	if (buffer[2] != 'a') return false;
+	if (buffer[3] != 'd') return false;
+	if (buffer[4] != 'b') return false;
+	if (buffer[5] != 'a') return false;
+	if (buffer[6] != 'c') return false;
+	if (buffer[7] != 'k') return false;
+	if (buffer[8] != 'u') return false;
+	if (buffer[9] != 'p') return false;
+
+	return true;
 }
 
 /*
