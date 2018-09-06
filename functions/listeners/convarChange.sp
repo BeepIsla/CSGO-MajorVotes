@@ -1,5 +1,7 @@
 public void OnConVarChange(ConVar convar, char[] oldValue, char[] newValue)
 {
+	if (GameRules_GetProp("m_bIsQueuedMatchmaking", 1) == 0) return;
+
 	new String:eventName[512];
 	GetConVarString(g_hEventName, eventName, sizeof(eventName));
 
@@ -13,6 +15,8 @@ public void OnConVarChange(ConVar convar, char[] oldValue, char[] newValue)
 
 public void OnConVarChange_checkSurrender(ConVar convar, char[] oldValue, char[] newValue)
 {
+	if (GameRules_GetProp("m_bIsQueuedMatchmaking", 1) == 0) return;
+
 	if (RealPlayerCount(0, false, false, false) <= 0) return;
 
 	int CTScore = CS_GetTeamScore(CS_TEAM_CT);
@@ -50,6 +54,8 @@ public void OnConVarChange_checkSurrender(ConVar convar, char[] oldValue, char[]
 
 public void OnConVarChange_voteDuration(ConVar convar, char[] oldValue, char[] newValue)
 {
+	if (GameRules_GetProp("m_bIsQueuedMatchmaking", 1) == 0) return;
+
 	if (GetConVarFloat(g_hVoteDuration) < 1.0)
 	{
 		SetConVarFloat(g_hVoteDuration, 1.0);

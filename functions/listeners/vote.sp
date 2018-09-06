@@ -1,5 +1,7 @@
 public Action:Listener_Vote(client, const String:command[], int argc)
 {
+	if (GameRules_GetProp("m_bIsQueuedMatchmaking", 1) == 0) return Plugin_Continue;
+
 	if (!isVoteActive || argc < 1)
 	{
 		return Plugin_Continue;

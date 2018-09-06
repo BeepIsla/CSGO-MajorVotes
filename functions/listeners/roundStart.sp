@@ -1,5 +1,7 @@
 public Action:Event_RoundStart(Handle:event, const String:name[], bool:dontBroadcast)
 {
+	if (GameRules_GetProp("m_bIsQueuedMatchmaking", 1) == 0) return Plugin_Continue;
+
 	int CTScore = CS_GetTeamScore(CS_TEAM_CT);
 	int TScore = CS_GetTeamScore(CS_TEAM_T);
 	int totalScore = CTScore + TScore;
@@ -30,4 +32,6 @@ public Action:Event_RoundStart(Handle:event, const String:name[], bool:dontBroad
 	{
 		canSurrender = true;
 	}
+
+	return Plugin_Continue;
 }

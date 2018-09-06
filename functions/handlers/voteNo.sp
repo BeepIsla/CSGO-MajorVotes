@@ -18,5 +18,5 @@ voteNo(client)
 	curVotes++; // Increase no votes
 	SetEntProp(entity, Prop_Send, "m_nVoteOptionCount", curVotes, _, 1); // Set no votes
 	
-	CreateTimer(0.5, Timer_GetResults);
+	CreateTimer(0.5, Timer_GetResults, GetClientUserId(client));
 }

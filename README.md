@@ -42,6 +42,13 @@ I recommend against loading backup files from other matches. They completely fuc
 
 # Changelog:
 
+**2.2.2:**
+- **General**
+- - Fixed the plugin not being fully deactivated when setting `sm_tournament_enabled` to `0` 
+
+- **Tournament Mode**
+- - Fixed coaches not being able to normal call votes (Might have caused some bugs)
+
 **2.2.1:**
 - **General**
 - - Added convars:

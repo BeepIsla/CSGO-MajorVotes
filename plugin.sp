@@ -6,7 +6,7 @@ public Plugin myinfo = {
 	name        = "Major Votes",
 	author      = "github.com/BeepFelix",
 	description = "Allows users to use the ingame votes seen in Major Tournaments such as \"Load Backup\", \"Pause during freezetime\", \"Begin warmup countdown to match start\", etc.",
-	version     = "2.2.1"
+	version     = "2.2.2"
 };
 
 int teamVoteID = -1;
@@ -65,6 +65,8 @@ public OnPluginStart()
 
 public void OnClientConnected(client)
 {
+	if (GameRules_GetProp("m_bIsQueuedMatchmaking", 1) == 0) return;
+
 	// To make 100% sure the convars are set properly
 	if (GetConVarFloat(g_hVoteDuration) < 1.0)
 	{
@@ -81,6 +83,8 @@ public void OnClientDisconnect(client)
 
 public void OnMapStart()
 {
+	if (GetConVarInt(g_hEnabled) <= 0) return;
+
 	new String:eventName[512];
 	GetConVarString(g_hEventName, eventName, sizeof(eventName));
 

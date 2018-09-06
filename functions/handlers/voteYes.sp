@@ -18,5 +18,5 @@ voteYes(client)
 	curVotes++; // Increase yes votes
 	SetEntProp(entity, Prop_Send, "m_nVoteOptionCount", curVotes, _, 0); // Set yes votes
 	
-	CreateTimer(0.5, Timer_GetResults);
+	CreateTimer(0.5, Timer_GetResults, GetClientUserId(client));
 }

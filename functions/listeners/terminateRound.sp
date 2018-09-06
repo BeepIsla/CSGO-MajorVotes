@@ -1,5 +1,7 @@
 public Action CS_OnTerminateRound(float& delay, CSRoundEndReason& reason)
 {
+	if (GameRules_GetProp("m_bIsQueuedMatchmaking", 1) == 0) return Plugin_Continue;
+
 	canSurrender = false;
 
 	if (reason != CSRoundEnd_TerroristsSurrender && reason != CSRoundEnd_CTSurrender)

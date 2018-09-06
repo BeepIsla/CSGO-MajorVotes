@@ -5,7 +5,7 @@ public Action:Listener_Listissues(client, const String:command[], int argc)
 
 	if (GameRules_GetProp("m_bIsQueuedMatchmaking", 1) == 1 && strlen(eventName) > 0)
 	{
-		if (GetClientTeam(client) == CS_TEAM_SPECTATOR) {
+		if (GetClientTeam(client) == CS_TEAM_SPECTATOR && GetEntProp(client, Prop_Send, "m_iCoachingTeam") == 0) {
 			PrintToConsole(client, "---Vote commands---");
 			PrintToConsole(client, "callvote ReadyForMatch");
 			PrintToConsole(client, "callvote NotReadyForMatch");
