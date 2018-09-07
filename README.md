@@ -17,6 +17,23 @@ I recommend against loading backup files from other matches. They completely fuc
 # Credit:
 - **Thanks to [Powerlord](https://forums.alliedmods.net/member.php?u=38996)** for making the original [NativeVotes](https://forums.alliedmods.net/showthread.php?t=208008), [csgo_votestart_test](https://github.com/powerlord/sourcemod-nativevotes/blob/master/addons/sourcemod/scripting/csgo_votestart_test.sp), [votediagnostics](https://github.com/powerlord/sourcemod-nativevotes/blob/master/addons/sourcemod/scripting/votediagnostics.sp) plugins and for the "[valve.inc](https://github.com/powerlord/sourcemod-tf2-scramble/blob/master/addons/sourcemod/scripting/include/valve.inc)". Without these and I would have never been able to understand how votes in CSGO works. Big big thanks to [Powerlord](https://forums.alliedmods.net/member.php?u=38996)!
 
+# Important notes since Panorama:
+- `sm_tournament_name` no longer supports custom names
+- - I am trying to find a way around this but I doubt I will find out
+- - You can **ONLY** use the strings found in the csgo_english.txt
+- - Example:
+- - - `sm_tournament_name "Custom Tournament"` will **NOT** work
+- - - `sm_tournament_name "2018 FACEIT London CS:GO Championship"` will **NOT** work
+- - - `sm_tournament_name "CSGO_Tournament_Event_Name_14"` will work and will display `2018 FACEIT London CS:GO Championship`
+
+- `sm_tournament_stage` no longer supports custom names
+- - I am trying to find a way around this but I doubt I will find out
+- - You can **ONLY** use the strings found in the csgo_english.txt
+- - Example:
+- - - `sm_tournament_stage "Custom Stage"` will **NOT** work
+- - - `sm_tournament_stage "Challengers Stage | Lower Pool"` will **NOT** work
+- - - `sm_tournament_stage "CSGO_Tournament_Event_Stage_Display_32"` will work and will display `Challengers Stage | Lower Pool`
+
 # Convars
 ### Custom
 - `sm_tournament_enabled`
