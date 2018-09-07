@@ -260,7 +260,7 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		
 		issueFound = true;
 	}
-	else if (/*strcmp(option, "LoadBackup", false) == 0 (Valve please stop breaking things)*/ isLoadBackup(option) == true && GetClientTeam(client) == CS_TEAM_SPECTATOR && GetEntProp(client, Prop_Send, "m_iCoachingTeam") == 0)
+	else if (strcmp(option, "LoadBackup", false) == 0 && GetClientTeam(client) == CS_TEAM_SPECTATOR && GetEntProp(client, Prop_Send, "m_iCoachingTeam") == 0)
 	{
 		// This vote ONLY works if we are in an event
 		new String:eventName[512];
@@ -279,9 +279,7 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 
 		// Get argument 2
 		new String:option2[512];
-		strcopy(option2, sizeof(option2), option);
-		ReplaceStringEx(option2, sizeof(option2), "loadbackup", "", -1, -1, false);
-		// GetCmdArg(2, option2, sizeof(option2));
+		GetCmdArg(2, option2, sizeof(option2));
 
 		// Continue with the normal stuff
 		voteType = 5;
