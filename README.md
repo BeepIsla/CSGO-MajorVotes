@@ -59,7 +59,6 @@ I recommend against loading backup files from other matches. They completely fuc
 - `sv_vote_timer_duration`
 - - Controls the length of the votes before they timeout
 - - Minimum 1.0
-
 - `sv_vote_issue_kick_allowed`
 - - Controls whether or not kicking is allowed (Matchmaking mode only)
 
