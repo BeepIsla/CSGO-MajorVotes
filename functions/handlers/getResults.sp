@@ -18,13 +18,13 @@ public Action:Timer_GetResults(Handle:timer, any:userid)
 		{
 			if (DidWePassQuorumRatio(option1, option2, 100))
 			{
-				VotePass();
+				CreateTimer(0.5, Timer_VotePass);
 				CreateTimer(0.5, Timer_DoSurrender, teamOnly);
 				canSurrender = false;
 			}
 			else
 			{
-				VoteFail(3);
+				CreateTimer(0.5, Timer_VoteFail, 3);
 			}
 		}
 	}
@@ -34,12 +34,12 @@ public Action:Timer_GetResults(Handle:timer, any:userid)
 		{
 			if (DidWePassQuorumRatio(option1, option2, 100))
 			{
-				VotePass();
+				CreateTimer(0.5, Timer_VotePass);
 				CreateTimer(0.5, Timer_DoReadyForMatch);
 			}
 			else
 			{
-				VoteFail(3);
+				CreateTimer(0.5, Timer_VoteFail, 3);
 			}
 		}
 	}
@@ -47,7 +47,7 @@ public Action:Timer_GetResults(Handle:timer, any:userid)
 	{
 		if (option1 >= 1)
 		{
-			VotePass();
+			CreateTimer(0.5, Timer_VotePass);
 			CreateTimer(0.5, Timer_DoNotReadyForMatch);
 		}
 	}
@@ -55,7 +55,7 @@ public Action:Timer_GetResults(Handle:timer, any:userid)
 	{
 		if (option1 >= 1)
 		{
-			VotePass();
+			CreateTimer(0.5, Timer_VotePass);
 			CreateTimer(0.5, Timer_DoPauseMatch);
 		}
 	}
@@ -65,12 +65,12 @@ public Action:Timer_GetResults(Handle:timer, any:userid)
 		{
 			if (DidWePassQuorumRatio(option1, option2, 100))
 			{
-				VotePass();
+				CreateTimer(0.5, Timer_VotePass);
 				CreateTimer(0.5, Timer_DoUnpauseMatch);
 			}
 			else
 			{
-				VoteFail(3);
+				CreateTimer(0.5, Timer_VoteFail, 3);
 			}
 		}
 	}
@@ -80,12 +80,12 @@ public Action:Timer_GetResults(Handle:timer, any:userid)
 		{
 			if (DidWePassQuorumRatio(option1, option2, 100))
 			{
-				VotePass();
+				CreateTimer(0.5, Timer_VotePass);
 				CreateTimer(0.5, Timer_DoLoadBackup);
 			}
 			else
 			{
-				VoteFail(3);
+				CreateTimer(0.5, Timer_VoteFail, 3);
 			}
 		}
 	}
@@ -93,7 +93,7 @@ public Action:Timer_GetResults(Handle:timer, any:userid)
 	{
 		if (option1 >= 1)
 		{
-			VotePass();
+			CreateTimer(0.5, Timer_VotePass);
 
 			if (teamOnly == CS_TEAM_SPECTATOR)
 			{

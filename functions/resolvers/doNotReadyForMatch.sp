@@ -6,7 +6,7 @@ public Action:Timer_DoNotReadyForMatch(Handle:timer)
 	new client = GetClientOfUserId(voteCaller);
 	if (client <= 0 && client > MaxClients)
 	{
-		CreateTimer(0.5, Timer_ResetData);
+		CreateTimer(5.0, Timer_ResetData);
 		return;
 	}
 	new String:ClientName[512];

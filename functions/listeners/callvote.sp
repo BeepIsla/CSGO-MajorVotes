@@ -281,15 +281,107 @@ public Action:Listener_Callvote(client, const String:command[], int argc)
 		new String:option2[512];
 		GetCmdArg(2, option2, sizeof(option2));
 
+		// Extract team scores out of backup file if it exists
+		if (FileExists(option2) == false)
+		{
+			new Handle:voteStart = StartMessage("CallVoteFailed", onlyUs, 1, USERMSG_RELIABLE);
+			PbSetInt(voteStart, "reason", 0);
+			PbSetInt(voteStart, "time", -1);
+			EndMessage();
+			return Plugin_Handled;
+		}
+
+		int firstHalfScoreTeam1 = 0;
+		int firstHalfScoreTeam2 = 0;
+		int secondHalfScoreTeam1 = 0;
+		int secondHalfScoreTeam2 = 0;
+		int OvertimeScoreTeam1 = 0;
+		int OvertimeScoreTeam2 = 0;
+
+		int currentlyLogging = -1;
+		// -1 = Undefined
+		// 0  = FirstHalfScore
+		// 1  = SecondHalfScore
+		// 2  = OvertimeScore
+
+		new String:line[1024];
+		new Handle:fileHandle = OpenFile(option2, "r");
+		while (!IsEndOfFile(fileHandle) && ReadFileLine(fileHandle, line, sizeof(line)))
+		{
+			TrimString(line);
+
+			if (strcmp(line, "\"FirstHalfScore\"", true) == 0)
+			{
+				currentlyLogging = 0;
+				continue;
+			}
+			else if (strcmp(line, "\"SecondHalfScore\"", true) == 0)
+			{
+				currentlyLogging = 1;
+				continue;
+			}
+			else if (strcmp(line, "\"OvertimeScore\"", true) == 0)
+			{
+				currentlyLogging = 2;
+				continue;
+			}
+
+			if (strncmp(line, "\"team1\"", 7, true) == 0)
+			{
+				ReplaceString(line, sizeof(line), "\"team1\"", "", true);
+				ReplaceString(line, sizeof(line), "\"", "", true);
+				TrimString(line);
+
+				if (currentlyLogging == 0)
+				{
+					firstHalfScoreTeam1 = StringToInt(line);
+				}
+				else if (currentlyLogging == 1)
+				{
+					secondHalfScoreTeam1 = StringToInt(line);
+				}
+				else if (currentlyLogging == 2)
+				{
+					OvertimeScoreTeam1 = StringToInt(line);
+				}
+			}
+			else if (strncmp(line, "\"team2\"", 7, true) == 0)
+			{
+				ReplaceString(line, sizeof(line), "\"team2\"", "", true);
+				ReplaceString(line, sizeof(line), "\"", "", true);
+				TrimString(line);
+
+				if (currentlyLogging == 0)
+				{
+					firstHalfScoreTeam2 = StringToInt(line);
+				}
+				else if (currentlyLogging == 1)
+				{
+					secondHalfScoreTeam2 = StringToInt(line);
+				}
+				else if (currentlyLogging == 2)
+				{
+					OvertimeScoreTeam2 = StringToInt(line);
+				}
+			}
+		}
+		CloseHandle(fileHandle);
+
+		int totalScoreTeam1 = (firstHalfScoreTeam1 + secondHalfScoreTeam1 + OvertimeScoreTeam1);
+		int totalScoreTeam2 = (firstHalfScoreTeam2 + secondHalfScoreTeam2 + OvertimeScoreTeam2);
+		new String:stringDetailsBackup[512];
+		Format(stringDetailsBackup, sizeof(stringDetailsBackup), "%d:%d", totalScoreTeam1, totalScoreTeam2);
+
 		// Continue with the normal stuff
 		voteType = 5;
 		displayString = "#SFUI_Vote_loadbackup";
-		detailsString = option2;
+		detailsString = stringDetailsBackup;
 		otherTeamString = "#SFUI_otherteam_vote_unimplemented";
 		passString = "#SFUI_vote_passed_loadbackup";
-		passDetailsString = option2;
+		passDetailsString = stringDetailsBackup;
 		isTeamOnly = false;
 		soloOnly = false;
+		Format(backupToLoad, sizeof(backupToLoad), "%s", option2);
 
 		issueFound = true;
 	}
@@ -384,11 +476,11 @@ public Action:Timer_StartVote(Handle:timer, any:userid)
 	
 	if (soloOnly == true) SetEntProp(entity, Prop_Send, "m_nPotentialVotes", 1);
 	else if (isTeamOnly == true) SetEntProp(entity, Prop_Send, "m_nPotentialVotes", RealPlayerCount(client, true, true, false));
-	else SetEntProp(entity, Prop_Send, "m_nPotentialVotes", RealPlayerCount(client, true, false, false));
-	
+	else SetEntProp(entity, Prop_Send, "m_nPotentialVotes", RealPlayerCount(client, true, false, true));
+
 	if (isTeamOnly == true || soloOnly == true) SetEntProp(entity, Prop_Send, "m_iOnlyTeamToVote", GetClientTeam(client));
 	else SetEntProp(entity, Prop_Send, "m_iOnlyTeamToVote", -1);
-	
+
 	SetEntProp(entity, Prop_Send, "m_bIsYesNoVote", true);
 	
 	for (new i = 0; i < 5; i++) SetEntProp(entity, Prop_Send, "m_nVoteOptionCount", 0, _, i);
@@ -457,10 +549,37 @@ public Action:Timer_VoteCast(Handle:timer, any:userid)
 	{
 		return Plugin_Continue;
 	}
-	
-	voteYes(client);
-	isVoteActive = true;
-	alreadyVoted[client] = true;
+
+	// Spectators cannot vote on issues (Excluding coaches if its a timeout or match pause)
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsClientInGame(i) == true && GetClientTeam(i) == CS_TEAM_SPECTATOR)
+		{
+			if (voteType == 3 || voteType == 6)
+			{
+				if (GetEntProp(client, Prop_Send, "m_iCoachingTeam") == 3 || GetEntProp(client, Prop_Send, "m_iCoachingTeam") == 2) continue;
+			}
+
+			alreadyVoted[i] = true;
+		}
+	}
+
+	if (voteType == 1 || voteType == 4 || voteType == 5)
+	{
+		if (IsClientInGame(client) == true && GetClientTeam(client) == CS_TEAM_SPECTATOR)
+		{
+			// Do not vote yes if we are a spectator. Spectators cannot vote on issues. (Including coaches)
+			// This only applies to "ReadyForMatch" (1), "UnpauseMatch" (4) and "LoadBackup" (5) votes
+			isVoteActive = true;
+			return Plugin_Handled;
+		}
+	}
+	else
+	{
+		voteYes(client);
+		isVoteActive = true;
+		alreadyVoted[client] = true;
+	}
 
 	return Plugin_Handled;
 }

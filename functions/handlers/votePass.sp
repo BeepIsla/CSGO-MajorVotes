@@ -1,8 +1,8 @@
-VotePass()
+public Action:Timer_VotePass(Handle:timer)
 {
 	new entity = FindEntityByClassname(-1, "vote_controller");
 	
-	if (entity < 0) return;
+	if (entity < 0) return Plugin_Continue;
 
 	new Handle:votePass;
 	if (soloOnly == true)
@@ -10,8 +10,8 @@ VotePass()
 		new client = GetClientOfUserId(voteCaller);
 		if (client <= 0 && client > MaxClients)
 		{
-			CreateTimer(0.5, Timer_ResetData);
-			return;
+			CreateTimer(5.0, Timer_ResetData);
+			return Plugin_Continue;
 		}
 
 		new onlyUs[1];
@@ -50,5 +50,6 @@ VotePass()
 		voteTimeout = null;
 	}
 	
-	CreateTimer(1.0, Timer_ResetData);
+	CreateTimer(5.0, Timer_ResetData);
+	return Plugin_Continue;
 }

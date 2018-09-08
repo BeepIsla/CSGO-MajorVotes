@@ -16,7 +16,7 @@ public Action CS_OnTerminateRound(float& delay, CSRoundEndReason& reason)
 
 			if (activeIssue == 0) // Surrender
 			{
-				VoteFail(33);
+				CreateTimer(1.0, Timer_VoteFail, 33);
 			}
 		}
 	}

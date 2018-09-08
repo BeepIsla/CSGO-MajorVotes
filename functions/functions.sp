@@ -81,15 +81,15 @@ public Action:Timer_ResetData(Handle:timer)
 	new entity = FindEntityByClassname(-1, "vote_controller");
 	if (entity > -1)
 	{
-		//SetEntProp(entity, Prop_Send, "m_iActiveIssueIndex", -1);
 		for (new i = 0; i < 5; i++)
 		{
 			SetEntProp(entity, Prop_Send, "m_nVoteOptionCount", 0, _, i);
 		}
+		SetEntProp(entity, Prop_Send, "m_iActiveIssueIndex", -1);
 		SetEntProp(entity, Prop_Send, "m_nPotentialVotes", 0);
 		SetEntProp(entity, Prop_Send, "m_iOnlyTeamToVote", -1);
 		SetEntProp(entity, Prop_Send, "m_bIsYesNoVote", true);
-	}	
+	}
 }
 
 /*

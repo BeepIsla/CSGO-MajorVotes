@@ -6,6 +6,6 @@ public Action Timer_VoteTimeout(Handle timer, any:userid)
 		return;
 	}
 
-	VoteFail(4);
+	CreateTimer(1.0, Timer_VoteFail, 4);
 	voteTimeout = null;
 }
