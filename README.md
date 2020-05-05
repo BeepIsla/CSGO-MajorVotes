@@ -19,7 +19,7 @@ You may need to adjust your server config as some convars are required to allow 
 
 # Config
 
-Place your config in `addons/sourcemod/configs/match.vdf`. A full example config can be found [here](match.configs/match.vdf). If a client joins the server and they are not in this list the server will automatically refuse connection. Run `sm_match_reload` to setup the match, you will likely need to execute this from the server console directly.
+Place your config in `addons/sourcemod/configs/match.vdf`. A full example config can be found [here](configs/match.vdf). If a client joins the server and they are not in this list the server will automatically refuse connection. Run `sm_match_reload` to setup the match, you will likely need to execute this from the server console directly.
 
 **Warning**: The command will reload the current map and every client not in the `match.vdf` will be kicked out.
 
