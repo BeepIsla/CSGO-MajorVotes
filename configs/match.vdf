@@ -1,0 +1,26 @@
+"Match"
+{
+	"Tournament"
+	{
+		"NameID"			"2"
+		"StageID"			"4"
+	}
+	"Teams"
+	{
+		"0"
+		{
+			"Name"			"Cloud9"
+			"Flag"			"US"
+			"Logo"			"C9"
+			"Players"		"61449372;60208330;87206806;346253535;14864123"
+		}
+		"1"
+		{
+			"Name"			"Natus Vincere"
+			"Flag"			"RU"
+			"Logo"			"NAVI"
+			"Players"		"156257548;73936547;83779379;185941338;160954758"
+		}
+	}
+	"Spectators"			"25341944;168894"
+}
