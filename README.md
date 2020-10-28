@@ -24,7 +24,7 @@ Place your config in `addons/sourcemod/configs/match.vdf`. A full example config
 **Warning**: The command will reload the current map and every client not in the `match.vdf` will be kicked out.
 
 - `Match`
-  - `Tournament`: **OPTIONAL** - Enables Tournament/Major mode
+  - `Tournament`: **OPTIONAL** - Enables Tournament/Major mode (You **must** start your server using `-tournament 1` to use tournament votes)
     - `NameID`: Event ID to display the name of - **Only** IDs from the [translation files](https://github.com/SteamDatabase/GameTracking-CSGO/blob/master/csgo/resource/csgo_english.txt?raw=true) work (Prefixed with `CSGO_Tournament_Event_Name_`).
     - `StageID`: Stage ID to display the name of - **Only** IDs from the [translation files](https://github.com/SteamDatabase/GameTracking-CSGO/blob/master/csgo/resource/csgo_english.txt?raw=true) work (Prefixed with `CSGO_Tournament_Event_Stage_Display_`).
   - `Teams`
